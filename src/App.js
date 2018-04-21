@@ -67,10 +67,32 @@ class App extends Component {
 
       state.itemMods = state.itemMods.slice(startIndex, endIndex)
 
-      console.log(state.itemName)
-      console.log(state.itemMods)
+      const nameRegex = new RegExp('.*' + state.itemName + '.*')
+
+      axios.get('http://api.pathofexile.com/public-stash-tabs')
+        .then(response => {
+            let resultArr = []
+
+            if (response.data && response.data.stashes) {
+              response.data.stashes
+                .filter(stash => {
+                  if (stash && stash.items.length > 0) {
+                    return stash
+                  }
+                })
+                .map(stash => stash.items)
+                .forEach(items => items.forEach(item => {
+                  if (item.name && nameRegex.test(item.name) && item.note)
+                    resultArr.push({name: item.name, mods: item.explicitMods, note: item.note})
+                }))
+            }
+            this.setState({data: resultArr})
+          },
+        )
 
       this.setState(state)
+
+      console.log(this.state)
     }
   }
 
