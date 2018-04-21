@@ -1,0 +1,28 @@
+Rarity: Unique
+Chin Sol
+Assassin Bow
+--------
+Bow
+Quality: +20% (augmented)
+Physical Damage: 86-255 (augmented)
+Elemental Damage: 25-50 (augmented)
+Critical Strike Chance: 6.50%
+Attacks per Second: 1.39 (augmented)
+--------
+Requirements:
+Level: 62
+Dex: 212
+--------
+Sockets: G-G-R-G
+--------
+Item Level: 72
+--------
+167% increased Physical Damage
++20 to Dexterity
+Adds 25 to 50 Fire Damage
+11% increased Attack Speed
+100% More Damage with Arrow Hits at Close Range
+Bow Knockback at Close Range
+--------
+As a soldier you want to get close to enemy archers.
+That is not the case when fighting the Maraketh.
