@@ -1,11 +1,5 @@
 import React, {Component} from 'react'
 
-const responseFromPost = {
-  'result': ['9a69d65b6e5aa19dbfb356d0a8704bb9adc74ce841267fb13bba6532cb094c9f', '323a03939464957a8509049c539ae4fe1c679d31596cdfe13ce6434061407336'],
-  'id': 'waokcy',
-  'total': 2,
-}
-
 class App extends Component {
   constructor() {
     super()
@@ -118,11 +112,11 @@ class App extends Component {
 
       state.itemMods = state.itemMods.slice(startIndex, endIndex)
 
-      fetch('http://www.pathofexile.com/api/trade/search/Bestiary?source=%7B"query":%7B"status":%7B"option":"online"%7D,"name":"Windripper","type":"Imperial Bow","stats":%5B%7B"type":"and","filters":%5B%5D%7D%5D%7D,"sort":%7B"price":"asc"%7D%7D', {method: 'GET'})
+      fetch('https://cors-anywhere.herokuapp.com/http://www.pathofexile.com/api/trade/search/Bestiary?source=%7B"query":%7B"status":%7B"option":"online"%7D,"name":"Windripper","type":"Imperial Bow","stats":%5B%7B"type":"and","filters":%5B%5D%7D%5D%7D,"sort":%7B"price":"asc"%7D%7D', {method: 'GET'})
         .then(response => response.json())
         .then(response => {
             for (let i = 0; i < 10; i++) {
-              fetch(`http://www.pathofexile.com/api/trade/fetch/${response.result.slice(i * 10, (i + 1) * 10).join()}?query=${responseFromPost.id}`, {method: 'GET'})
+              fetch(`https://www.pathofexile.com/api/trade/fetch/${response.result.slice(i * 10, (i + 1) * 10).join()}?query=${response.id}`, {method: 'GET'})
                 .then(response => response.json())
                 //.then(response => console.log(response.result))
                 .then(response => this.setState({
