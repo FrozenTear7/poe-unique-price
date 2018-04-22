@@ -135,12 +135,7 @@ class App extends Component {
         .then(response => console.log(response))*/
 
       fetch('https://www.pathofexile.com/api/trade/search/Bestiary', {
-        headers: {
-          'Access-Control-Allow-Headers': '*',
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
-        },
-        data: {
+        body: {
           'query': {
             'status': {'option': 'online'},
             'name': 'Windripper',
@@ -148,10 +143,16 @@ class App extends Component {
             'stats': [{'type': 'and', 'filters': []}],
           }, 'sort': {'price': 'asc'},
         },
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'content-type': 'application/json',
+        },
         method: 'POST',
+        mode: 'cors',
       })
-        .then(response => response.json())
-        .then(response => this.setState({...this.state, resultList: response.result}))
+        .then(response => console.log(response))
+      /*
+      .then(response => this.setState({...this.state, resultList: response.result}))*/
 
       fetch(`https://www.pathofexile.com/api/trade/fetch/${(responseFromPost.result.join()).replace(/'/gi, '')}?query=${responseFromPost.id}`, {method: 'GET'})
         .then(response => response.json())
