@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import axios from 'axios'
 
 const responseFromPost = {
   'result': ['9a69d65b6e5aa19dbfb356d0a8704bb9adc74ce841267fb13bba6532cb094c9f', '323a03939464957a8509049c539ae4fe1c679d31596cdfe13ce6434061407336'],
@@ -33,6 +32,7 @@ class App extends Component {
           <h3>Best results:</h3>
           <ul className='list-group'>
             {list.map(item => {
+              //console.log(item)
               return (
                 <div key={item.id}>
                   <li className='list-group-item' onClick={() => {
@@ -117,51 +117,21 @@ class App extends Component {
       }
 
       state.itemMods = state.itemMods.slice(startIndex, endIndex)
-      /*
-      axios.post('https://www.pathofexile.com/api/trade/search/Bestiary', {
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
-        },
-        data: {
-          'query': {
-            'status': {'option': 'online'},
-            'name': 'Windripper',
-            'type': 'Imperial Bow',
-            'stats': [{'type': 'and', 'filters': []}],
-          }, 'sort': {'price': 'asc'},
-        },
-      })
-        .then(response => console.log(response))*/
 
-      fetch('https://www.pathofexile.com/api/trade/search/Bestiary', {
-        body: {
-          'query': {
-            'status': {'option': 'online'},
-            'name': 'Windripper',
-            'type': 'Imperial Bow',
-            'stats': [{'type': 'and', 'filters': []}],
-          }, 'sort': {'price': 'asc'},
-        },
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'content-type': 'application/json',
-        },
-        method: 'POST',
-        mode: 'cors',
-      })
-        .then(response => console.log(response))
-      /*
-      .then(response => this.setState({...this.state, resultList: response.result}))*/
-
-      fetch(`https://www.pathofexile.com/api/trade/fetch/${(responseFromPost.result.join()).replace(/'/gi, '')}?query=${responseFromPost.id}`, {method: 'GET'})
+      fetch('http://www.pathofexile.com/api/trade/search/Bestiary?source=%7B"query":%7B"status":%7B"option":"online"%7D,"name":"Windripper","type":"Imperial Bow","stats":%5B%7B"type":"and","filters":%5B%5D%7D%5D%7D,"sort":%7B"price":"asc"%7D%7D', {method: 'GET'})
         .then(response => response.json())
-        .then(response => this.setState({...this.state, resultList: response.result}))
-      /*
-      .then(response => this.setState({...this.state, resultList: response.data.result}))*/
-      /*
-            axios.get(`https://www.pathofexile.com/api/trade/fetch/${(responseFromPost.result.join()).replace(/'/gi, '')}?query=${responseFromPost.id}`)
-              .then(response => this.setState({...this.state, resultList: response.data.result}))*/
+        .then(response => {
+            for (let i = 0; i < 10; i++) {
+              fetch(`http://www.pathofexile.com/api/trade/fetch/${response.result.slice(i * 10, (i + 1) * 10).join()}?query=${responseFromPost.id}`, {method: 'GET'})
+                .then(response => response.json())
+                //.then(response => console.log(response.result))
+                .then(response => this.setState({
+                  ...this.state,
+                  resultList: [...this.state.resultList, ...response.result],
+                }))
+            }
+          },
+        )
 
       this.setState(state)
     }
@@ -183,7 +153,6 @@ class App extends Component {
 
     return (
       <div className='container-fluid'>
-        xd2
         <nav className='navbar navbar-expand-lg navbar-light bg-dark'>
           <a className='navbar-brand' style={{color: 'white'}}>Poe unique price</a>
         </nav>
