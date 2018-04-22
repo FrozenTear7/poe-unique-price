@@ -18,6 +18,7 @@ class App extends Component {
       itemMods: [],
       league: 'Bestiary',
       resultList: [],
+      activeItemId: '',
     }
   }
 
@@ -27,25 +28,24 @@ class App extends Component {
         <h4>No results</h4>
       )
     else {
-      console.log(list)
       return (
         <div>
           <h3>Best results:</h3>
           <ul className='list-group'>
             {list.map(item => {
               return (
-                <div className='dropdown'>
-                  <li key={item.id}
-                      className='list-group-item dropdown-toggle' type="button"
-                      id={item.id} data-toggle="dropdown" aria-haspopup="true"
-                      aria-expanded="false">{item.info.price.amount} - {item.info.price.currency}</li>
-                  <div className="dropdown-menu" aria-labelledby={item.id}>
-                    {item.item.explicitMods.map(mod => {
-                      return (
-                        <li className="dropdown-item" key={mod}>{mod}</li>
-                      )
-                    })}
-                  </div>
+                <div key={item.id}>
+                  <li className='list-group-item' onClick={() => {
+                    this.setState({
+                      ...this.state,
+                      activeItemId: item.id,
+                    })
+                  }}>{item.info.price.amount} - {item.info.price.currency}</li>
+                  {this.state.activeItemId === item.id && item.item.explicitMods.map(mod => {
+                    return (
+                      <li key={mod}>{mod}</li>
+                    )
+                  })}
                 </div>
               )
             })}
@@ -143,6 +143,7 @@ class App extends Component {
     state.itemType = ''
     state.itemMods = []
     state.resultList = []
+    state.activeItemId = ''
     this.setState(state)
   }
 

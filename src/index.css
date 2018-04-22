@@ -6,3 +6,7 @@ body {
     font-family: "Trebuchet MS";
     background-color: aliceblue;
 }
+
+ul {
+    list-style-type: none;
+}
