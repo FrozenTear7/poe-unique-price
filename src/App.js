@@ -36,10 +36,16 @@ class App extends Component {
               return (
                 <div key={item.id}>
                   <li className='list-group-item' onClick={() => {
-                    this.setState({
-                      ...this.state,
-                      activeItemId: item.id,
-                    })
+                    if (this.state.activeItemId === item.id)
+                      this.setState({
+                        ...this.state,
+                        activeItemId: '',
+                      })
+                    else
+                      this.setState({
+                        ...this.state,
+                        activeItemId: item.id,
+                      })
                   }}>{item.info.price.amount} - {item.info.price.currency}</li>
                   {this.state.activeItemId === item.id && item.item.explicitMods.map(mod => {
                     return (
@@ -95,6 +101,7 @@ class App extends Component {
         if (countLines === 2) {
           startIndex = i + 1
           break
+
         }
       }
 
@@ -110,27 +117,50 @@ class App extends Component {
       }
 
       state.itemMods = state.itemMods.slice(startIndex, endIndex)
-
       /*
-            axios.post('http://www.pathofexile.com/api/trade/search/Bestiary', {
-              headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-                'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
-              },
-              data: {
-                'query': {
-                  'status': {'option': 'online'},
-                  'name': state.itemName,
-                  'type': state.itemType',
-                  'stats': [{'type': 'and', 'filters': []}],
-                }, 'sort': {'price': 'asc'},
-              },
-            })*/
+      axios.post('https://www.pathofexile.com/api/trade/search/Bestiary', {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json',
+        },
+        data: {
+          'query': {
+            'status': {'option': 'online'},
+            'name': 'Windripper',
+            'type': 'Imperial Bow',
+            'stats': [{'type': 'and', 'filters': []}],
+          }, 'sort': {'price': 'asc'},
+        },
+      })
+        .then(response => console.log(response))*/
 
-      axios.get(`https://www.pathofexile.com/api/trade/fetch/${(responseFromPost.result.join()).replace(/'/gi, '')}?query=${responseFromPost.id}`)
-        .then(response => this.setState({...this.state, resultList: response.data.result}))
+      fetch('https://www.pathofexile.com/api/trade/search/Bestiary', {
+        headers: {
+          'Access-Control-Allow-Headers': '*',
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json',
+        },
+        data: {
+          'query': {
+            'status': {'option': 'online'},
+            'name': 'Windripper',
+            'type': 'Imperial Bow',
+            'stats': [{'type': 'and', 'filters': []}],
+          }, 'sort': {'price': 'asc'},
+        },
+        method: 'POST',
+      })
+        .then(response => response.json())
+        .then(response => this.setState({...this.state, resultList: response.result}))
+
+      fetch(`https://www.pathofexile.com/api/trade/fetch/${(responseFromPost.result.join()).replace(/'/gi, '')}?query=${responseFromPost.id}`, {method: 'GET'})
+        .then(response => response.json())
+        .then(response => this.setState({...this.state, resultList: response.result}))
+      /*
+      .then(response => this.setState({...this.state, resultList: response.data.result}))*/
+      /*
+            axios.get(`https://www.pathofexile.com/api/trade/fetch/${(responseFromPost.result.join()).replace(/'/gi, '')}?query=${responseFromPost.id}`)
+              .then(response => this.setState({...this.state, resultList: response.data.result}))*/
 
       this.setState(state)
     }
@@ -152,6 +182,7 @@ class App extends Component {
 
     return (
       <div className='container-fluid'>
+        xd2
         <nav className='navbar navbar-expand-lg navbar-light bg-dark'>
           <a className='navbar-brand' style={{color: 'white'}}>Poe unique price</a>
         </nav>
