@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import TextareaAutosize from 'react-autosize-textarea'
 
 class App extends Component {
   constructor () {
@@ -235,7 +236,7 @@ class App extends Component {
                     </div>
                   </div>
                 </div>
-                <textarea className='form-control' style={{height: 600, fontSize: 12}} name='itemDesc'
+                <TextareaAutosize className='form-control' style={{'height': '50%', fontSize: 12}} name='itemDesc'
                           placeholder='Item description' value={itemDesc} onChange={this.onChange}/>
               </div>
               <button type='submit' className='btn btn-outline-success'>Check price</button>
