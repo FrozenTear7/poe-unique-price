@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 
 class App extends Component {
-  constructor() {
+  constructor () {
     super()
 
     this.state = {
@@ -142,7 +142,7 @@ class App extends Component {
     this.setState(state)
   }
 
-  render() {
+  render () {
     const {itemDesc, resultList} = this.state
 
     return (
@@ -162,6 +162,52 @@ class App extends Component {
                 </select>
                 <br/>
                 <label>Paste the unique item below you want to price check</label>
+                <button type='button' className='btn-sm btn-info' data-toggle='modal' data-target='#help'>
+                  Help
+                </button>
+                <div className='modal fade' id='help' role='dialog'
+                     aria-labelledby='helpLabel' aria-hidden='true'>
+                  <div className='modal-dialog' role='document'>
+                    <div className='modal-content'>
+                      <div className='modal-header'>
+                        <h5 className='modal-title' id='helpLabel'>Example description</h5>
+                        <button type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                          <span aria-hidden='true'>&times;</span>
+                        </button>
+                      </div>
+                      <div className='modal-body'>
+                        Rarity: Unique<br/>
+                        Chin Sol<br/>
+                        Assassin Bow<br/>
+                        --------<br/>
+                        Bow<br/>
+                        Quality: +20% (augmented)<br/>
+                        Physical Damage: 86-255 (augmented)<br/>
+                        Elemental Damage: 25-50 (augmented)<br/>
+                        Critical Strike Chance: 6.50%<br/>
+                        Attacks per Second: 1.39 (augmented)<br/>
+                        --------<br/>
+                        Requirements:<br/>
+                        Level: 62<br/>
+                        Dex: 212<br/>
+                        --------<br/>
+                        Sockets: G-G-R-G<br/>
+                        --------<br/>
+                        Item Level: 72<br/>
+                        --------<br/>
+                        167% increased Physical Damage<br/>
+                        +20 to Dexterity<br/>
+                        Adds 25 to 50 Fire Damage<br/>
+                        11% increased Attack Speed<br/>
+                        100% More Damage with Arrow Hits at Close Range<br/>
+                        Bow Knockback at Close Range<br/>
+                        --------<br/>
+                        As a soldier you want to get close to enemy archers.<br/>
+                        That is not the case when fighting the Maraketh.<br/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <textarea className='form-control' style={{height: 600, fontSize: 12}} name='itemDesc'
                           placeholder='Item description' value={itemDesc} onChange={this.onChange}/>
               </div>
