@@ -1,0 +1,1 @@
+{"query":{"status":{"option":"online"},"name":"Chin Sol","type":"Assassin Bow","stats":[{"type":"and","filters":[{"id":"explicit.stat_3261801346","value":{"min":1}},{"id":"explicit.stat_2749166636","value":{"min":1}},{"id":"explicit.stat_3261557635","value":{"min":1}},]}]},"sort":{"price":"asc"}}

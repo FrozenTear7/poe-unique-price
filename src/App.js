@@ -136,6 +136,8 @@ class App extends Component {
 
       itemMods = itemMods.slice(startIndex, endIndex)
 
+      let itemBase = itemDesc.match(/^.*\n.*\n.*\n--------\n.*\n/)[0].match(/.*$/)[0]
+
       let filterQuery = []
       const tmpMods = itemMods.map(mod => mod.replace(/[\d*#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, ''))
       //|| this.state.mods[i].text.replace(/[#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, '') === tmpMods[j] + ' (Local)'
@@ -152,7 +154,18 @@ class App extends Component {
       console.log(tmpMods)
       console.log(filterQuery)
 
-      fetch(`https://cors-anywhere.herokuapp.com/http://www.pathofexile.com/api/trade/search/Bestiary?source=%7B"query":%7B"status":%7B"option":"online"%7D,"name":"${itemName}","type":"${itemType}","stats":%5B%7B"type":"and","filters":%5B%5D%7D%5D%7D,"sort":%7B"price":"asc"%7D%7D`, {method: 'GET'})
+      let filterMods = ``
+
+      for (let i = 0; i < filterQuery.length; i++) {
+        filterMods += `%7B"id":"${filterQuery[i].id}","value":%7B"min":1%7D%7D`
+        if (i !== filterQuery.length - 1)
+          filterMods += ','
+      }
+
+      console.log(filterMods)
+
+      //fetch(`https://cors-anywhere.herokuapp.com/http://www.pathofexile.com/api/trade/search/Bestiary?source=%7B"query":%7B"status":%7B"option":"online"%7D,"name":"${itemName}","type":"${itemType}","stats":%5B%7B"type":"and","filters":%5B%7B"id":"explicit.stat_3261801346","value":%7B"min":1%7D%7D%5D%7D%5D%7D,"sort":%7B"price":"asc"%7D%7D`, {method: 'GET'})
+      fetch(`https://cors-anywhere.herokuapp.com/http://www.pathofexile.com/api/trade/search/Bestiary?source=%7B"query":%7B"status":%7B"option":"online"%7D,"name":"${itemName}","type":"${itemType}","stats":%5B%7B"type":"and","filters":%5B${filterMods}%5D%7D%5D%7D,"sort":%7B"price":"asc"%7D%7D`, {method: 'GET'})
         .then(response => response.json())
         .then(response => {
             if (response.error) {
