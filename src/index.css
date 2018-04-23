@@ -50,3 +50,9 @@ ul {
     -o-animation: rotating 2s linear infinite;
     animation: rotating 2s linear infinite;
 }
+
+.scroll {
+    overflow: hidden;
+    overflow-y: scroll;
+    height: 500px;
+}

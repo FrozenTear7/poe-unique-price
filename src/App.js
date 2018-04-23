@@ -1,8 +1,9 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import TextareaAutosize from 'react-autosize-textarea'
+import mods from './mods'
 
 class App extends Component {
-  constructor() {
+  constructor () {
     super()
 
     this.state = {
@@ -12,12 +13,11 @@ class App extends Component {
       loadingList: false,
       errorList: null,
       activeItemId: '',
+      mods: mods.mods,
     }
   }
 
   mapResultList = (list) => {
-    console.log(list)
-
     if (this.state.loadingList)
       return (
         <div>
@@ -44,7 +44,7 @@ class App extends Component {
       return (
         <div>
           <h3>Best results:</h3>
-          <ul className='list-group'>
+          <ul className='list-group scroll'>
             {list.map(item => {
               return (
                 <div key={item.id}>
@@ -86,6 +86,8 @@ class App extends Component {
     let itemDesc = this.state.itemDesc, itemName, itemType, itemMods
 
     this.setState({...this.state, loadingList: true, resultList: null})
+
+    console.log(this.state.mods)
 
     if (itemDesc !== '') {
       //read item name
@@ -134,11 +136,25 @@ class App extends Component {
 
       itemMods = itemMods.slice(startIndex, endIndex)
 
+      let filterQuery = []
+      const tmpMods = itemMods.map(mod => mod.replace(/[\d*#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, ''))
+      //|| this.state.mods[i].text.replace(/[#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, '') === tmpMods[j] + ' (Local)'
+
+      for (let i = 0; filterQuery.length < tmpMods.length && i < this.state.mods.length; i++) {
+        for (let j = 0; j < tmpMods.length; j++) {
+          if (this.state.mods[i].text.replace(/[#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, '') === tmpMods[j]) {
+            filterQuery = [...filterQuery, this.state.mods[i]]
+            break
+          }
+        }
+      }
+
+      console.log(tmpMods)
+      console.log(filterQuery)
+
       fetch(`https://cors-anywhere.herokuapp.com/http://www.pathofexile.com/api/trade/search/Bestiary?source=%7B"query":%7B"status":%7B"option":"online"%7D,"name":"${itemName}","type":"${itemType}","stats":%5B%7B"type":"and","filters":%5B%5D%7D%5D%7D,"sort":%7B"price":"asc"%7D%7D`, {method: 'GET'})
         .then(response => response.json())
         .then(response => {
-            console.log(response)
-
             if (response.error) {
               this.setState({
                 ...this.state,
@@ -182,7 +198,7 @@ class App extends Component {
     this.setState(state)
   }
 
-  render() {
+  render () {
     const {itemDesc, resultList} = this.state
 
     return (
