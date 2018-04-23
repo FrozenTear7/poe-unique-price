@@ -87,8 +87,6 @@ class App extends Component {
 
     this.setState({...this.state, loadingList: true, resultList: null})
 
-    console.log(this.state.mods)
-
     if (itemDesc !== '') {
       //read item name
       if (/Rarity: .*\n.*\n*/.test(itemDesc)) {
@@ -136,22 +134,28 @@ class App extends Component {
 
       itemMods = itemMods.slice(startIndex, endIndex)
 
-      let itemBase = itemDesc.match(/^.*\n.*\n.*\n--------\n.*\n/)[0].match(/.*$/)[0]
+      let itemBase = itemDesc.match(/^.*\n.*\n.*\n--------\n.*\n/)[0].match(/--------\n.*/)[0].split('\n')[1]
 
       let filterQuery = []
       const tmpMods = itemMods.map(mod => mod.replace(/[\d*#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, ''))
-      //|| this.state.mods[i].text.replace(/[#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, '') === tmpMods[j] + ' (Local)'
 
-      for (let i = 0; filterQuery.length < tmpMods.length && i < this.state.mods.length; i++) {
+      for (let i = 0; i < this.state.mods.length; i++) {
         for (let j = 0; j < tmpMods.length; j++) {
-          if (this.state.mods[i].text.replace(/[#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, '') === tmpMods[j]) {
+          if ((['increased Physical Damage (Local)', 'increased Attack Speed (Local)',
+                'Adds to Physical Damage (Local)', 'Adds to Lightning Damage (Local)',
+                'Adds to Cold Damage (Local)', 'Adds to Fire Damage (Local)', 'to Accuracy Rating (Local)',
+                'chance to Poison on Hit (Local)', 'increased Accuracy Rating (Local)', 'Adds to Chaos Damage (Local)']
+                .includes(this.state.mods[i].text.replace(/[#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, ''))
+              && this.state.mods[i].text.replace(/[#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, '') === tmpMods[j] + ' (Local)'
+              && ['Bow'].includes(itemBase))
+            || this.state.mods[i].text.replace(/[#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, '') === tmpMods[j]) {
             filterQuery = [...filterQuery, this.state.mods[i]]
+            tmpMods.splice(tmpMods.indexOf(tmpMods[j]), 1)
             break
           }
         }
       }
 
-      console.log(tmpMods)
       console.log(filterQuery)
 
       let filterMods = ``
@@ -161,8 +165,6 @@ class App extends Component {
         if (i !== filterQuery.length - 1)
           filterMods += ','
       }
-
-      console.log(filterMods)
 
       //fetch(`https://cors-anywhere.herokuapp.com/http://www.pathofexile.com/api/trade/search/Bestiary?source=%7B"query":%7B"status":%7B"option":"online"%7D,"name":"${itemName}","type":"${itemType}","stats":%5B%7B"type":"and","filters":%5B%7B"id":"explicit.stat_3261801346","value":%7B"min":1%7D%7D%5D%7D%5D%7D,"sort":%7B"price":"asc"%7D%7D`, {method: 'GET'})
       fetch(`https://cors-anywhere.herokuapp.com/http://www.pathofexile.com/api/trade/search/Bestiary?source=%7B"query":%7B"status":%7B"option":"online"%7D,"name":"${itemName}","type":"${itemType}","stats":%5B%7B"type":"and","filters":%5B${filterMods}%5D%7D%5D%7D,"sort":%7B"price":"asc"%7D%7D`, {method: 'GET'})
