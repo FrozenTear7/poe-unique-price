@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import TextareaAutosize from 'react-autosize-textarea'
 import mods from './mods'
 
 class App extends Component {
-  constructor () {
+  constructor() {
     super()
 
     this.state = {
@@ -147,7 +147,13 @@ class App extends Component {
                 'chance to Poison on Hit (Local)', 'increased Accuracy Rating (Local)', 'Adds to Chaos Damage (Local)']
                 .includes(this.state.mods[i].text.replace(/[#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, ''))
               && this.state.mods[i].text.replace(/[#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, '') === tmpMods[j] + ' (Local)'
-              && ['Bow'].includes(itemBase))
+              && ['Bow', 'One Hand Axe', 'Two Hand Axe', 'Claw', 'Dagger', 'One Hand Mace', 'Two Hand Mace', 'Staff',
+                'One Hand Sword', 'Two Hand Sword', 'Wand'].includes(itemBase))
+            || (['# to maximum Energy Shield (Local)', '#% increased Evasion Rating (Local)', '#% increased Armour (Local)',
+                '# to Armour (Local)', '# to Evasion Rating (Local)']
+                .includes(this.state.mods[i].text.replace(/[#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, ''))
+              && this.state.mods[i].text.replace(/[#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, '') === tmpMods[j] + ' (Local)'
+              && ['Body Armour', 'Boots', 'Gloves', 'Helmet', 'Shield'].includes(itemBase))
             || this.state.mods[i].text.replace(/[#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, '') === tmpMods[j]) {
             filterQuery = [...filterQuery, this.state.mods[i]]
             tmpMods.splice(tmpMods.indexOf(tmpMods[j]), 1)
@@ -213,7 +219,7 @@ class App extends Component {
     this.setState(state)
   }
 
-  render () {
+  render() {
     const {itemDesc, resultList} = this.state
 
     return (
