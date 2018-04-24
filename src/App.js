@@ -52,11 +52,13 @@ class App extends Component {
         <h4>No results</h4>
       )
     else {
+      console.log(list)
+
       return (
         <div>
           <h3>Best results:</h3>
           <ul className='list-group scroll'>
-            {list.map(item => {
+            {list.filter(item => item.info && item.info.price).map(item => {
               return (
                 <div key={item.id}>
                   <li className='list-group-item' onClick={() => {
@@ -145,6 +147,7 @@ class App extends Component {
       itemMods = itemMods.slice(startIndex, endIndex)
 
       const tmpMods = itemMods.map(mod => mod.replace(/[\d*#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, ''))
+      const tmpItemMods = itemMods
 
       let itemBase = itemDesc.match(/^.*\n.*\n.*\n--------\n.*\n/)[0].match(/--------\n.*/)[0].split('\n')[1]
 
@@ -166,8 +169,9 @@ class App extends Component {
               && this.state.mods[i].text.replace(/[#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, '') === tmpMods[j] + ' (Local)'
               && ['Body Armour', 'Boots', 'Gloves', 'Helmet', 'Shield'].includes(itemBase))
             || this.state.mods[i].text.replace(/[#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, '') === tmpMods[j]) {
-            filterQuery = [...filterQuery, this.state.mods[i]]
+            filterQuery = [...filterQuery, {id: this.state.mods[i].id, value: this.getModValue(tmpItemMods[j])}]
             tmpMods.splice(tmpMods.indexOf(tmpMods[j]), 1)
+            tmpItemMods.splice(tmpMods.indexOf(tmpMods[j]), 1)
             break
           }
         }
@@ -182,10 +186,8 @@ class App extends Component {
 
       for (let i = 0; i < filterQuery.length; i++) {
         filterMods += `%7B"id":"${filterQuery[i].id}"`
-        if (tmpMods[i]) {
-          console.log(tmpMods[i])
-          console.log(this.getModValue(tmpMods[i]))
-          filterMods += `,"value":%7B"min":${this.getModValue(tmpMods[i])}%7D`
+        if (filterQuery[i].value) {
+          filterMods += `,"value":%7B"min":${filterQuery[i].value}%7D`
         }
         filterMods += '%7D'
         if (i !== filterQuery.length - 1)
@@ -196,21 +198,17 @@ class App extends Component {
       fetch(`https://cors-anywhere.herokuapp.com/http://www.pathofexile.com/api/trade/search/Bestiary?source=%7B"query":%7B"status":%7B"option":"online"%7D,"name":"${itemName}","type":"${itemType}","stats":%5B%7B"type":"and","filters":%5B${filterMods}%5D%7D%5D%7D,"sort":%7B"price":"asc"%7D%7D`, {method: 'GET'})
         .then(response => response.json())
         .then(response => {
-            console.log(response)
-
             if (response.error) {
               this.setState({
                 ...this.state,
-                errorList: response.error,
+                errorList: response.error.message,
               })
             } else {
               if (response.total > 0)
-                for (let i = 0; i < 10; i++) {
+                for (let i = 0; i < Math.ceil(response.total/10); i++) {
                   fetch(`https://www.pathofexile.com/api/trade/fetch/${response.result.slice(i * 10, (i + 1) * 10).join()}?query=${response.id}`, {method: 'GET'})
                     .then(response => response.json())
                     .then(response => {
-                      console.log(response)
-
                       if (!this.state.resultList)
                         this.setState({
                           ...this.state,
