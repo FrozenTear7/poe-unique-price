@@ -17,6 +17,17 @@ class App extends Component {
     }
   }
 
+  getModValue = (mod) => {
+    if (mod.match(/\d+/g)) {
+      if (mod.match(/\d+/g)[1])
+        return Math.floor((+(mod.match(/\d+/g)[0]) + +(mod.match(/\d+/g)[1])) / 2)
+      else
+        return +mod.match(/\d+/g)[0]
+    }
+    else
+      return null
+  }
+
   mapResultList = (list) => {
     if (this.state.loadingList)
       return (
@@ -83,7 +94,7 @@ class App extends Component {
   onSubmit = (e) => {
     e.preventDefault()
 
-    let itemDesc = this.state.itemDesc, itemName, itemType, itemMods, itemModsValues = []
+    let itemDesc = this.state.itemDesc, itemName, itemType, itemMods
 
     this.setState({...this.state, loadingList: true, resultList: null})
 
@@ -133,23 +144,11 @@ class App extends Component {
 
       itemMods = itemMods.slice(startIndex, endIndex)
 
-      console.log(itemMods)
-
-      for(let i = 0; i < itemMods.length; i++) {
-        if(itemMods[i].match(/\d+/g)) {
-          if(itemMods[i].match(/\d+/g)[1])
-            itemModsValues.push(Math.floor((+(itemMods[i].match(/\d+/g)[0]) + +(itemMods[i].match(/\d+/g)[1])) / 2))
-          else
-            itemModsValues.push(+itemMods[i].match(/\d+/g)[0])
-        }
-      }
-
-      console.log(itemModsValues)
+      const tmpMods = itemMods.map(mod => mod.replace(/[\d*#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, ''))
 
       let itemBase = itemDesc.match(/^.*\n.*\n.*\n--------\n.*\n/)[0].match(/--------\n.*/)[0].split('\n')[1]
 
       let filterQuery = []
-      const tmpMods = itemMods.map(mod => mod.replace(/[\d*#+%]/g, '').replace(/ {2}/g, ' ').replace(/^ /g, ''))
 
       for (let i = 0; i < this.state.mods.length; i++) {
         for (let j = 0; j < tmpMods.length; j++) {
@@ -174,16 +173,21 @@ class App extends Component {
         }
       }
 
-      console.log(filterQuery)
-
-      fetch('http://poe.ninja/api/Data/GetCurrencyOverview?league=Bestiary', {method: 'GET'})
-        .then(response => response.json())
-        .then(response => console.log(response))
+      /*
+            fetch('http://poe.ninja/api/Data/GetCurrencyOverview?league=Bestiary', {method: 'GET'})
+              .then(response => response.json())
+              .then(response => console.log(response))*/
 
       let filterMods = ``
 
       for (let i = 0; i < filterQuery.length; i++) {
-        filterMods += `%7B"id":"${filterQuery[i].id}","value":%7B"min":1%7D%7D`
+        filterMods += `%7B"id":"${filterQuery[i].id}"`
+        if (tmpMods[i]) {
+          console.log(tmpMods[i])
+          console.log(this.getModValue(tmpMods[i]))
+          filterMods += `,"value":%7B"min":${this.getModValue(tmpMods[i])}%7D`
+        }
+        filterMods += '%7D'
         if (i !== filterQuery.length - 1)
           filterMods += ','
       }
@@ -192,6 +196,8 @@ class App extends Component {
       fetch(`https://cors-anywhere.herokuapp.com/http://www.pathofexile.com/api/trade/search/Bestiary?source=%7B"query":%7B"status":%7B"option":"online"%7D,"name":"${itemName}","type":"${itemType}","stats":%5B%7B"type":"and","filters":%5B${filterMods}%5D%7D%5D%7D,"sort":%7B"price":"asc"%7D%7D`, {method: 'GET'})
         .then(response => response.json())
         .then(response => {
+            console.log(response)
+
             if (response.error) {
               this.setState({
                 ...this.state,
@@ -203,6 +209,8 @@ class App extends Component {
                   fetch(`https://www.pathofexile.com/api/trade/fetch/${response.result.slice(i * 10, (i + 1) * 10).join()}?query=${response.id}`, {method: 'GET'})
                     .then(response => response.json())
                     .then(response => {
+                      console.log(response)
+
                       if (!this.state.resultList)
                         this.setState({
                           ...this.state,
