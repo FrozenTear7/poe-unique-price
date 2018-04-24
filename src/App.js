@@ -42,7 +42,7 @@ class App extends Component {
     let {league, itemDesc} = this.state
 
     if (itemDesc !== '' && /Rarity: Unique(.|\n)*/.test(itemDesc)) {
-      this.setState({...this.state, loadingList: true, resultList: null})
+      this.setState({...this.state, loadingList: true, resultList: null, errorList: null})
 
       fetch(`https://cors-anywhere.herokuapp.com/http://poe.ninja/api/Data/GetCurrencyOverview?league=${league}`, {method: 'GET'})
         .then(response => response.json())
@@ -67,7 +67,12 @@ class App extends Component {
                     .join()}?query=${response.id}`, {method: 'GET'})
                     .then(response => response.json())
                     .then(response => {
-                      if (!this.state.resultList)
+                      if (response.error) {
+                        this.setState({
+                          ...this.state,
+                          errorList: response.error.message,
+                        })
+                      } else if (!this.state.resultList)
                         this.setState({
                           ...this.state,
                           resultList: response.result,
@@ -86,9 +91,7 @@ class App extends Component {
             this.setState({...this.state, loadingList: false})
           },
         )
-    } else if (itemDesc === '')
-      this.setState({...this.state, errorList: 'No description provided'})
-    else
+    } else
       this.setState({...this.state, errorList: 'Wrong item description'})
   }
 
@@ -117,7 +120,8 @@ class App extends Component {
               <div className='modal-content'>
                 <div className='modal-header'>
                   <h5 className='modal-title' id='helpLabel'>Example description</h5>
-                  <button type='button' className='close' data-dismiss='modal' aria-label='Close'>
+                  <button type='button' className='close' data-dismiss='modal' aria-label='Close'
+                          disabled={this.state.loadingList}>
                     <span aria-hidden='true'>&times;</span>
                   </button>
                 </div>
@@ -172,11 +176,13 @@ class App extends Component {
                 <TextareaAutosize className='form-control' style={{minHeight: 100, fontSize: 12}} name='itemDesc'
                                   placeholder='Item description' value={itemDesc} onChange={this.onChange}/>
               </div>
-              <button type='submit' className='btn btn-outline-success'>Check price</button>
+              <button disabled={loadingList || itemDesc === ''} type='submit' className='btn btn-outline-success'>
+                Check price
+              </button>
             </form>
             <br/>
-            <button className='btn-sm btn-outline-danger' onClick={this.clearItem}
-                    disabled={loadingList}>Clear
+            <button className='btn-sm btn-outline-danger' onClick={this.clearItem}>
+              Clear
             </button>
           </div>
           <div className='col-lg-6'>

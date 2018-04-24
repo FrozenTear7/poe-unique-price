@@ -78,7 +78,7 @@ export const getFilterQueue = (itemDesc) => {
   for (let i = 0; i < filterQuery.length; i++) {
     filterMods += `%7B"id":"${filterQuery[i].id}"`
     if (filterQuery[i].value) {
-      filterMods += `,"value":%7B"min":10%7D`
+      filterMods += `,"value":%7B"min":${filterQuery[i].value}%7D`
     }
     filterMods += '%7D'
     if (i !== filterQuery.length - 1)
@@ -103,10 +103,10 @@ export const priceChaos = (currencyList, amount, name) => {
   if (name === 'chaos')
     return amount
   else
-    return amount * currencyList.lines.filter(currency => {
+    return (amount * currencyList.lines.filter(currency => {
       if (reg.test(currency.currencyTypeName))
         return currency
-    })[0].chaosEquivalent.toFixed(1)
+    })[0].chaosEquivalent).toFixed(2)
 }
 
 export const priceExalt = (currencyList, amount, name) => {
@@ -114,7 +114,7 @@ export const priceExalt = (currencyList, amount, name) => {
   if (name === 'exalted')
     return amount
   else if (name === 'chaos')
-    return (amount / currencyList.lines[3].chaosEquivalent).toFixed(2)
+    return (amount / currencyList.lines[3].chaosEquivalent).toFixed(3)
   else
     return (amount * currencyList.lines.filter(currency => {
       if (reg.test(currency.currencyTypeName))
