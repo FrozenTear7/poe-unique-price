@@ -83,7 +83,7 @@ class App extends Component {
   onSubmit = (e) => {
     e.preventDefault()
 
-    let itemDesc = this.state.itemDesc, itemName, itemType, itemMods
+    let itemDesc = this.state.itemDesc, itemName, itemType, itemMods, itemModsValues = []
 
     this.setState({...this.state, loadingList: true, resultList: null})
 
@@ -117,7 +117,6 @@ class App extends Component {
         if (countLines === 2) {
           startIndex = i + 1
           break
-
         }
       }
 
@@ -133,6 +132,19 @@ class App extends Component {
       }
 
       itemMods = itemMods.slice(startIndex, endIndex)
+
+      console.log(itemMods)
+
+      for(let i = 0; i < itemMods.length; i++) {
+        if(itemMods[i].match(/\d+/g)) {
+          if(itemMods[i].match(/\d+/g)[1])
+            itemModsValues.push(Math.floor((+(itemMods[i].match(/\d+/g)[0]) + +(itemMods[i].match(/\d+/g)[1])) / 2))
+          else
+            itemModsValues.push(+itemMods[i].match(/\d+/g)[0])
+        }
+      }
+
+      console.log(itemModsValues)
 
       let itemBase = itemDesc.match(/^.*\n.*\n.*\n--------\n.*\n/)[0].match(/--------\n.*/)[0].split('\n')[1]
 
