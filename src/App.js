@@ -176,6 +176,10 @@ class App extends Component {
 
       console.log(filterQuery)
 
+      fetch('http://poe.ninja/api/Data/GetCurrencyOverview?league=Bestiary', {method: 'GET'})
+        .then(response => response.json())
+        .then(response => console.log(response))
+
       let filterMods = ``
 
       for (let i = 0; i < filterQuery.length; i++) {
