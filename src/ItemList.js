@@ -27,7 +27,7 @@ class ItemList extends Component {
           {error}
         </h2>
       )
-    else if (!list)
+    else if (!list || !currencyList)
       return (
         <span/>
       )

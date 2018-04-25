@@ -126,7 +126,7 @@ export const priceExalt = (currencyList, amount, name) => {
     })[0].chaosEquivalent / currencyList.lines[3].chaosEquivalent).toFixed(3)
 }
 
-export const getListAvg = (currencyList, resultList) => {
+export const getListAvgChaos = (currencyList, resultList) => {
   let sum = 0, amount = 0
 
   resultList.forEach(item => {
@@ -134,8 +134,22 @@ export const getListAvg = (currencyList, resultList) => {
         sum += +priceChaos(currencyList, item.info.price.amount, item.info.price.currency)
         amount++
       }
-    }
+    },
   )
 
   return (sum / amount).toFixed(2)
+}
+
+export const getListAvgExalt = (currencyList, resultList) => {
+  let sum = 0, amount = 0
+
+  resultList.forEach(item => {
+      if (item.info.price) {
+        sum += +priceChaos(currencyList, item.info.price.amount, item.info.price.currency)
+        amount++
+      }
+    },
+  )
+
+  return ((sum / amount) / currencyList.lines[3].chaosEquivalent).toFixed(2)
 }

@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import TextareaAutosize from 'react-autosize-textarea'
 import mods from './mods'
 import ItemList from './ItemList'
-import { getFilterQueue, getItemType, getItemName, getListAvg } from './utils'
+import {getFilterQueue, getItemType, getItemName, getListAvgChaos, getListAvgExalt} from './utils'
 
 class App extends Component {
-  constructor () {
+  constructor() {
     super()
 
     this.state = {
@@ -15,19 +15,8 @@ class App extends Component {
       loadingList: false,
       errorList: null,
       mods: mods.mods,
-      currencyList: null
+      currencyList: null,
     }
-  }
-
-  getModValue = (mod) => {
-    if (mod.match(/\d+/g)) {
-      if (mod.match(/\d+/g)[1])
-        return Math.floor((+(mod.match(/\d+/g)[0]) + +(mod.match(/\d+/g)[1])) / 2)
-      else
-        return +mod.match(/\d+/g)[0]
-    }
-    else
-      return null
   }
 
   onChange = (e) => {
@@ -104,7 +93,7 @@ class App extends Component {
     this.setState(state)
   }
 
-  render () {
+  render() {
     const {loadingList, resultList, errorList, itemDesc, currencyList} = this.state
 
     return (
@@ -186,7 +175,15 @@ class App extends Component {
             </button>
           </div>
           <div className='col-lg-6'>
-            {this.state.resultList && <h2>Estimated price: {getListAvg(currencyList, resultList)}</h2>}
+            {this.state.resultList &&
+            <h2 className='alert-success'>
+              Estimated price: {getListAvgChaos(currencyList, resultList)}
+              <img alt='Chaos Orb'
+                   src='http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png?scale=1&w=1&h=1'/>
+              {'\t\t\t' + getListAvgExalt(currencyList, resultList)}
+              <img alt='Exalted Orb'
+                   src='http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyAddModToRare.png?scale=1&w=1&h=1'/>
+            </h2>}
             <br/>
             {<ItemList list={resultList} loading={loadingList} error={errorList} currencyList={currencyList}/>}
           </div>
