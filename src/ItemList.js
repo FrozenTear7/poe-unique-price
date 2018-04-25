@@ -40,7 +40,8 @@ class ItemList extends Component {
         <div>
           <h3>Best results:</h3>
           <ul className='list-group scroll'>
-            {list.filter(item => item.info && item.info.price).map(item => {
+            {list.filter(item => item.info && item.info.price
+              && priceChaos(currencyList, item.info.price.amount, item.info.price.currency) > 0).map(item => {
               return (
                 <div key={item.id}>
                   <li className='list-group-item' onClick={() => {
@@ -54,8 +55,7 @@ class ItemList extends Component {
                         ...this.props,
                         activeId: item.id,
                       })
-                  }}><h2>
-                    {priceChaos(currencyList, item.info.price.amount, item.info.price.currency)}
+                  }}><h2> {priceChaos(currencyList, item.info.price.amount, item.info.price.currency)}
                     <img alt='Chaos Orb'
                          src='http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png?scale=1&w=1&h=1'/>
                     {'\t\t\t' + priceExalt(currencyList, item.info.price.amount, item.info.price.currency)}

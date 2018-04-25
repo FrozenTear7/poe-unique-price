@@ -78,7 +78,7 @@ export const getFilterQueue = (itemDesc) => {
   for (let i = 0; i < filterQuery.length; i++) {
     filterMods += `%7B"id":"${filterQuery[i].id}"`
     if (filterQuery[i].value) {
-      filterMods += `,"value":%7B"min":${filterQuery[i].value}%7D`
+      filterMods += `,"value":%7B"min":${filterQuery[i].value - 5},"max":${filterQuery[i].value + 5}%7D`
     }
     filterMods += '%7D'
     if (i !== filterQuery.length - 1)
@@ -106,6 +106,8 @@ export const priceChaos = (currencyList, amount, name) => {
     return (amount * currencyList.lines.filter(currency => {
       if (reg.test(currency.currencyTypeName))
         return currency
+      else
+        return 0
     })[0].chaosEquivalent).toFixed(2)
 }
 
@@ -119,5 +121,21 @@ export const priceExalt = (currencyList, amount, name) => {
     return (amount * currencyList.lines.filter(currency => {
       if (reg.test(currency.currencyTypeName))
         return currency
+      else
+        return 0
     })[0].chaosEquivalent / currencyList.lines[3].chaosEquivalent).toFixed(3)
+}
+
+export const getListAvg = (currencyList, resultList) => {
+  let sum = 0, amount = 0
+
+  resultList.forEach(item => {
+      if (item.info.price) {
+        sum += +priceChaos(currencyList, item.info.price.amount, item.info.price.currency)
+        amount++
+      }
+    }
+  )
+
+  return (sum / amount).toFixed(2)
 }

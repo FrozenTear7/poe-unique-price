@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import TextareaAutosize from 'react-autosize-textarea'
 import mods from './mods'
 import ItemList from './ItemList'
-import { getFilterQueue, getItemType, getItemName } from './utils'
+import { getFilterQueue, getItemType, getItemName, getListAvg } from './utils'
 
 class App extends Component {
   constructor () {
@@ -186,7 +186,7 @@ class App extends Component {
             </button>
           </div>
           <div className='col-lg-6'>
-            <h2>Estimated price: </h2>
+            {this.state.resultList && <h2>Estimated price: {getListAvg(currencyList, resultList)}</h2>}
             <br/>
             {<ItemList list={resultList} loading={loadingList} error={errorList} currencyList={currencyList}/>}
           </div>

@@ -12,31 +12,36 @@
           {
             "id": "explicit.stat_3261801346",
             "value": {
-              "min": 10
+              "min": 15,
+              "max": 25
             }
           },
           {
             "id": "explicit.stat_1805374733",
             "value": {
-              "min": 10
+              "min": 162,
+              "max": 172
             }
           },
           {
             "id": "explicit.stat_210067635",
             "value": {
-              "min": 10
+              "min": 6,
+              "max": 16
             }
           },
           {
             "id": "explicit.stat_709508406",
             "value": {
-              "min": 10
+              "min": 32,
+              "max": 42
             }
           },
           {
             "id": "explicit.stat_2749166636",
             "value": {
-              "min": 10
+              "min": 95,
+              "max": 105
             }
           },
           {
