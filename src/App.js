@@ -65,7 +65,7 @@ class App extends Component {
               errorList: response.error.message,
             })
           } else {
-            if (response.total > 0)
+            if (response.total >= 20 && response.total <= 100)
               for (let i = 0; i < 10 && i < Math.ceil(response.total / 10); i++) {
                 fetch(`https://www.pathofexile.com/api/trade/fetch/${response.result.slice(i * 10, (i + 1) * 10)
                   .join()}?query=${response.id}`, {method: 'GET'})
@@ -88,8 +88,12 @@ class App extends Component {
                       })
                   })
               }
-            else
-              this.setState({...this.state, loadingList: true, resultList: []})
+            else if (response.total < 20)
+              this.getResultList(eps + 1)
+            else if (response.total > 100)
+              this.getResultList(eps - 1)
+            // else
+            //   this.setState({...this.state, loadingList: true, resultList: []})
           }
 
           this.setState({...this.state, loadingList: false})
@@ -112,7 +116,7 @@ class App extends Component {
       this.setState({...this.state, loadingList: true, resultList: null, errorList: null})
 
       this.getCurrencyList()
-      this.getResultList(3)
+      this.getResultList(1)
     } else
       this.setState({...this.state, errorList: 'Wrong item description'})
   }
