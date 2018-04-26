@@ -1,57 +1,128 @@
-{
-  "query": {
-    "status": {
-      "option": "online"
-    },
-    "name": "Chin Sol",
-    "type": "Assassin Bow",
-    "stats": [
+[
+  {
+    "id": "Standard",
+    "description": "#LeagueStandard",
+    "registerAt": null,
+    "event": false,
+    "url": "http:\/\/pathofexile.com\/forum\/view-thread\/71278",
+    "startAt": "2013-01-23T21:00:00Z",
+    "endAt": null,
+    "rules": []
+  },
+  {
+    "id": "Hardcore",
+    "description": "#LeagueHardcore",
+    "registerAt": null,
+    "event": false,
+    "url": "http:\/\/pathofexile.com\/forum\/view-thread\/71276",
+    "startAt": "2013-01-23T21:00:00Z",
+    "endAt": null,
+    "rules": [
       {
-        "type": "and",
-        "filters": [
-          {
-            "id": "explicit.stat_3261801346",
-            "value": {
-              "min": 15,
-              "max": 25
-            }
-          },
-          {
-            "id": "explicit.stat_1805374733",
-            "value": {
-              "min": 162,
-              "max": 172
-            }
-          },
-          {
-            "id": "explicit.stat_210067635",
-            "value": {
-              "min": 6,
-              "max": 16
-            }
-          },
-          {
-            "id": "explicit.stat_709508406",
-            "value": {
-              "min": 32,
-              "max": 42
-            }
-          },
-          {
-            "id": "explicit.stat_2749166636",
-            "value": {
-              "min": 95,
-              "max": 105
-            }
-          },
-          {
-            "id": "explicit.stat_3261557635"
-          }
-        ]
+        "id": 4,
+        "name": "Hardcore",
+        "description": "A character killed in Hardcore is moved to its parent league."
       }
     ]
   },
-  "sort": {
-    "price": "asc"
+  {
+    "id": "SSF Standard",
+    "description": "#LeagueStandardSSF",
+    "registerAt": null,
+    "event": false,
+    "url": "http:\/\/pathofexile.com\/forum\/view-thread\/1841357",
+    "startAt": "2013-01-23T21:00:00Z",
+    "endAt": null,
+    "rules": [
+      {
+        "id": 24,
+        "name": "Solo",
+        "description": "You may not party in this league."
+      }
+    ]
+  },
+  {
+    "id": "SSF Hardcore",
+    "description": "#LeagueHardcoreSSF",
+    "registerAt": null,
+    "event": false,
+    "url": "http:\/\/pathofexile.com\/forum\/view-thread\/1841353",
+    "startAt": "2013-01-23T21:00:00Z",
+    "endAt": null,
+    "rules": [
+      {
+        "id": 4,
+        "name": "Hardcore",
+        "description": "A character killed in Hardcore is moved to its parent league."
+      },
+      {
+        "id": 24,
+        "name": "Solo",
+        "description": "You may not party in this league."
+      }
+    ]
+  },
+  {
+    "id": "Bestiary",
+    "description": "#LeagueStandardBestiary",
+    "registerAt": "2018-03-02T19:00:00Z",
+    "event": false,
+    "url": "http:\/\/pathofexile.com\/forum\/view-thread\/2094448",
+    "startAt": "2018-03-02T20:00:00Z",
+    "endAt": "2018-05-28T22:00:00Z",
+    "rules": []
+  },
+  {
+    "id": "Hardcore Bestiary",
+    "description": "#LeagueHardcoreBestiary",
+    "registerAt": "2018-03-02T19:00:00Z",
+    "event": false,
+    "url": "http:\/\/pathofexile.com\/forum\/view-thread\/2094446",
+    "startAt": "2018-03-02T20:00:00Z",
+    "endAt": "2018-05-28T22:00:00Z",
+    "rules": [
+      {
+        "id": 4,
+        "name": "Hardcore",
+        "description": "A character killed in Hardcore is moved to its parent league."
+      }
+    ]
+  },
+  {
+    "id": "SSF Bestiary",
+    "description": "#LeagueStandardSSFBestiary",
+    "registerAt": "2018-03-02T19:00:00Z",
+    "event": false,
+    "url": "http:\/\/pathofexile.com\/forum\/view-thread\/2094445",
+    "startAt": "2018-03-02T20:00:00Z",
+    "endAt": "2018-05-28T22:00:00Z",
+    "rules": [
+      {
+        "id": 24,
+        "name": "Solo",
+        "description": "You may not party in this league."
+      }
+    ]
+  },
+  {
+    "id": "SSF Bestiary HC",
+    "description": "#LeagueHardcoreSSFBestiary",
+    "registerAt": "2018-03-02T19:00:00Z",
+    "event": false,
+    "url": "http:\/\/pathofexile.com\/forum\/view-thread\/2094432",
+    "startAt": "2018-03-02T20:00:00Z",
+    "endAt": "2018-05-28T22:00:00Z",
+    "rules": [
+      {
+        "id": 4,
+        "name": "Hardcore",
+        "description": "A character killed in Hardcore is moved to its parent league."
+      },
+      {
+        "id": 24,
+        "name": "Solo",
+        "description": "You may not party in this league."
+      }
+    ]
   }
-}
+]

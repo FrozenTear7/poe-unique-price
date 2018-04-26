@@ -11,7 +11,7 @@ const getModValue = (mod) => {
     return null
 }
 
-export const getFilterQueue = (itemDesc) => {
+export const getFilterQuery = (itemDesc, eps) => {
   const mods = jsonMods.mods
   let itemMods
 
@@ -78,7 +78,7 @@ export const getFilterQueue = (itemDesc) => {
   for (let i = 0; i < filterQuery.length; i++) {
     filterMods += `%7B"id":"${filterQuery[i].id}"`
     if (filterQuery[i].value) {
-      filterMods += `,"value":%7B"min":${filterQuery[i].value - 5},"max":${filterQuery[i].value + 5}%7D`
+      filterMods += `,"value":%7B"min":${filterQuery[i].value - eps},"max":${filterQuery[i].value + eps}%7D`
     }
     filterMods += '%7D'
     if (i !== filterQuery.length - 1)
@@ -130,8 +130,8 @@ export const getListAvgChaos = (currencyList, resultList) => {
   let sum = 0, amount = 0
 
   resultList.forEach(item => {
-      if (item.info.price) {
-        sum += +priceChaos(currencyList, item.info.price.amount, item.info.price.currency)
+      if (item.listing.price) {
+        sum += +priceChaos(currencyList, item.listing.price.amount, item.listing.price.currency)
         amount++
       }
     },
@@ -144,8 +144,8 @@ export const getListAvgExalt = (currencyList, resultList) => {
   let sum = 0, amount = 0
 
   resultList.forEach(item => {
-      if (item.info.price) {
-        sum += +priceChaos(currencyList, item.info.price.amount, item.info.price.currency)
+      if (item.listing.price) {
+        sum += +priceChaos(currencyList, item.listing.price.amount, item.listing.price.currency)
         amount++
       }
     },
