@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import TextareaAutosize from 'react-autosize-textarea'
 import mods from './mods'
 import ItemList from './ItemList'
-import { getFilterQuery, getItemType, getItemName, getListAvgChaos, getListAvgExalt } from './utils'
+import {getFilterQuery, getItemType, getItemName, getListAvgChaos, getListAvgExalt} from './utils'
 import Loading from './Loading'
 
 class App extends Component {
-  constructor () {
+  constructor() {
     super()
 
     this.state = {
@@ -17,7 +17,7 @@ class App extends Component {
       errorList: null,
       mods: mods.mods,
       currencyList: null,
-      leagues: null
+      leagues: null,
     }
   }
 
@@ -35,7 +35,7 @@ class App extends Component {
       })
   }
 
-  getCurrencyList () {
+  getCurrencyList() {
     const {league} = this.state
 
     fetch(`https://cors-anywhere.herokuapp.com/http://poe.ninja/api/Data/GetCurrencyOverview?league=${league}`, {method: 'GET'})
@@ -92,9 +92,9 @@ class App extends Component {
                   this.setState({...this.state, loadingList: false})
               }
             else if (response.total < 20)
-              this.getResultList(eps + 1)
+              this.getResultList(eps + 1.5)
             else if (response.total > 100)
-              this.getResultList(eps - 1)
+              this.getResultList(eps - 1.5)
           }
         },
       )
@@ -109,13 +109,33 @@ class App extends Component {
   onSubmit = (e) => {
     e.preventDefault()
 
-    let {itemDesc} = this.state
+    let {itemDesc, league} = this.state
 
     if (itemDesc !== '' && /Rarity: Unique(.|\n)*/.test(itemDesc)) {
       this.setState({...this.state, loadingList: true, resultList: null, errorList: null})
 
       this.getCurrencyList()
-      this.getResultList(1)
+
+      fetch(`https://cors-anywhere.herokuapp.com/http://www.pathofexile.com/api/trade/search/${league}?source=%7B"query":
+      %7B"status":%7B"option":"online"%7D,"name":"${getItemName(itemDesc)}","type":"${getItemType(itemDesc)}","stats":
+      %5B%7B"type":"and","filters":%5B%5D%7D%5D%7D,"sort":%7B"price":"asc"%7D%7D`, {method: 'GET'})
+        .then(response => response.json())
+        .then(response => {
+          if (response.error) {
+            this.setState({
+              ...this.state,
+              errorList: response.error.message,
+            })
+          } else if (response.total !== 0) {
+            this.getResultList(1)
+          } else if (response.total === 0)
+            if (response.error) {
+              this.setState({
+                ...this.state,
+                errorList: 'No such item on the market at the moment',
+              })
+            }
+        })
     } else
       this.setState({...this.state, errorList: 'Wrong item description'})
   }
@@ -129,7 +149,7 @@ class App extends Component {
     this.setState(state)
   }
 
-  render () {
+  render() {
     const {loadingList, resultList, errorList, itemDesc, currencyList, leagues} = this.state
 
     if (leagues)

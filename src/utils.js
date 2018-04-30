@@ -78,7 +78,7 @@ export const getFilterQuery = (itemDesc, eps) => {
   for (let i = 0; i < filterQuery.length; i++) {
     filterMods += `%7B"id":"${filterQuery[i].id}"`
     if (filterQuery[i].value) {
-      filterMods += `,"value":%7B"min":${filterQuery[i].value - eps},"max":${filterQuery[i].value + eps}%7D`
+      filterMods += `,"value":%7B"min":${filterQuery[i].value * (1 - eps / 100)},"max":${filterQuery[i].value * (1 + eps / 100)}%7D`
     }
     filterMods += '%7D'
     if (i !== filterQuery.length - 1)
@@ -99,6 +99,9 @@ export const getItemType = (itemDesc) => {
 }
 
 export const priceChaos = (currencyList, amount, name) => {
+  if(name === 'gcp')
+    name = 'gem'
+
   const reg = new RegExp('.*' + name[0].toUpperCase() + name.substring(1, name.length) + '.*')
   if (name === 'chaos')
     return amount
@@ -112,6 +115,9 @@ export const priceChaos = (currencyList, amount, name) => {
 }
 
 export const priceExalt = (currencyList, amount, name) => {
+  if(name === 'gcp')
+    name = 'gem'
+
   const reg = new RegExp('.*' + name[0].toUpperCase() + name.substring(1, name.length) + '.*')
   if (name === 'exalted')
     return amount
@@ -151,5 +157,5 @@ export const getListAvgExalt = (currencyList, resultList) => {
     },
   )
 
-  return ((sum / amount) / currencyList.lines[3].chaosEquivalent).toFixed(2)
+  return ((sum / amount) / currencyList.lines[3].chaosEquivalent).toFixed(3)
 }
