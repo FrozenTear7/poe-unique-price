@@ -2,7 +2,14 @@ import React, {Component} from 'react'
 import TextareaAutosize from 'react-autosize-textarea'
 import mods from './mods'
 import ItemList from './ItemList'
-import {getFilterQuery, getItemType, getItemName, getListAvgChaos, getListAvgExalt} from './utils'
+import {
+  getFilterQuery,
+  getItemType,
+  getItemName,
+  getListAvgChaos,
+  getListAvgExalt,
+  getListProjected,
+} from './utils'
 import Loading from './Loading'
 
 class App extends Component {
@@ -65,7 +72,7 @@ class App extends Component {
               errorList: response.error.message,
             })
           } else {
-            if (response.total >= 20 && response.total <= 100)
+            if (response.total >= 20 && response.total <= 100) {
               for (let i = 0; i < 10 && i < Math.ceil(response.total / 10); i++) {
                 fetch(`https://www.pathofexile.com/api/trade/fetch/${response.result.slice(i * 10, (i + 1) * 10)
                   .join()}?query=${response.id}`, {method: 'GET'})
@@ -79,24 +86,26 @@ class App extends Component {
                     } else if (!this.state.resultList)
                       this.setState({
                         ...this.state,
-                        resultList: response.result,
+                        resultList: getListProjected(this.state.currencyList, response.result),
                       })
                     else
                       this.setState({
                         ...this.state,
-                        resultList: [...this.state.resultList, ...response.result],
+                        resultList: getListProjected(this.state.currencyList, [...this.state.resultList, ...response.result]),
                       })
                   })
 
                 if (i === 9 || i === Math.ceil(response.total / 10) - 1)
                   this.setState({...this.state, loadingList: false})
               }
+            }
             else if (response.total < 20)
               this.getResultList(eps + 1.5)
             else if (response.total > 100)
               this.getResultList(eps - 1.5)
           }
-        },
+        }
+        ,
       )
   }
 
