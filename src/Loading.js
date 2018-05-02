@@ -3,7 +3,7 @@ import React from 'react'
 const Loading = () => (
   <div className='text-center'>
     <img className='img-circle rotating' alt='Tyler'
-         src='https://scontent.fwaw3-1.fna.fbcdn.net/v/t1.15752-9/31530689_1681548911934101_4504961647399403520_n.png?_nc_cat=0&oh=feb8606bf0bdf4fb7ac46950a883c78b&oe=5B65CFBA'/>
+         src='http://web.poecdn.com/image/Art/2DItems/Currency/CurrencyRerollRare.png?scale=1&w=1&h=1'/>
   </div>
 )
 

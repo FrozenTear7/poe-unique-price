@@ -28,8 +28,8 @@ class App extends Component {
     }
   }
 
-  componentWillMount = async () => {
-    await fetch('https://cors-anywhere.herokuapp.com/http://www.pathofexile.com/api/leagues?type=main', {method: 'GET'})
+  componentWillMount = () => {
+    fetch('https://cors-anywhere.herokuapp.com/http://www.pathofexile.com/api/leagues?type=main', {method: 'GET'})
       .then(response => response.json())
       .then(response => {
         if (response.error) {
@@ -86,17 +86,20 @@ class App extends Component {
                     } else if (!this.state.resultList)
                       this.setState({
                         ...this.state,
-                        resultList: getListProjected(this.state.currencyList, response.result),
+                        resultList: response.result,
                       })
                     else
                       this.setState({
                         ...this.state,
-                        resultList: getListProjected(this.state.currencyList, [...this.state.resultList, ...response.result]),
+                        resultList: [...this.state.resultList, ...response.result],
                       })
                   })
 
                 if (i === 9 || i === Math.ceil(response.total / 10) - 1)
-                  this.setState({...this.state, loadingList: false})
+                  this.setState({
+                    ...this.state,
+                    loadingList: false,
+                  })
               }
             }
             else if (response.total < 20)
@@ -159,7 +162,9 @@ class App extends Component {
   }
 
   render() {
-    const {loadingList, resultList, errorList, itemDesc, currencyList, leagues} = this.state
+    const {loadingList, errorList, itemDesc, currencyList, leagues} = this.state
+
+    const resultList = getListProjected(currencyList, this.state.resultList)
 
     if (leagues)
       return (
