@@ -11,7 +11,7 @@ const getModValue = (mod) => {
     return null
 }
 
-export const getFilterQueue = (itemDesc) => {
+export const getFilterQuery = (itemDesc, eps) => {
   const mods = jsonMods.mods
   let itemMods
 
@@ -78,7 +78,7 @@ export const getFilterQueue = (itemDesc) => {
   for (let i = 0; i < filterQuery.length; i++) {
     filterMods += `%7B"id":"${filterQuery[i].id}"`
     if (filterQuery[i].value) {
-      filterMods += `,"value":%7B"min":10%7D`
+      filterMods += `,"value":%7B"min":${filterQuery[i].value * (1 - eps / 100)},"max":${filterQuery[i].value * (1 + eps / 100)}%7D`
     }
     filterMods += '%7D'
     if (i !== filterQuery.length - 1)
@@ -99,25 +99,111 @@ export const getItemType = (itemDesc) => {
 }
 
 export const priceChaos = (currencyList, amount, name) => {
+  if (name === 'gcp')
+    name = 'gem'
+
   const reg = new RegExp('.*' + name[0].toUpperCase() + name.substring(1, name.length) + '.*')
   if (name === 'chaos')
     return amount
   else
-    return amount * currencyList.lines.filter(currency => {
+    return (amount * currencyList.lines.filter(currency => {
       if (reg.test(currency.currencyTypeName))
         return currency
-    })[0].chaosEquivalent.toFixed(1)
+      else
+        return 0
+    })[0].chaosEquivalent).toFixed(2)
 }
 
 export const priceExalt = (currencyList, amount, name) => {
+  if (name === 'gcp')
+    name = 'gem'
+
   const reg = new RegExp('.*' + name[0].toUpperCase() + name.substring(1, name.length) + '.*')
   if (name === 'exalted')
     return amount
   else if (name === 'chaos')
-    return (amount / currencyList.lines[3].chaosEquivalent).toFixed(2)
+    return (amount / currencyList.lines[3].chaosEquivalent).toFixed(3)
   else
     return (amount * currencyList.lines.filter(currency => {
       if (reg.test(currency.currencyTypeName))
         return currency
+      else
+        return 0
     })[0].chaosEquivalent / currencyList.lines[3].chaosEquivalent).toFixed(3)
+}
+
+export const getListAvgChaos = (currencyList, resultList) => {
+  if (!resultList)
+    return 0
+
+  let sum = 0, amount = 0
+
+  resultList.forEach(item => {
+      if (item.listing.price) {
+        sum += +priceChaos(currencyList, item.listing.price.amount, item.listing.price.currency)
+        amount++
+      }
+    },
+  )
+
+  return (sum / amount).toFixed(2)
+}
+
+export const getListAvgExalt = (currencyList, resultList) => {
+  if (!resultList)
+    return 0
+
+  let sum = 0, amount = 0
+
+  resultList.forEach(item => {
+      if (item.listing.price) {
+        sum += +priceChaos(currencyList, item.listing.price.amount, item.listing.price.currency)
+        amount++
+      }
+    },
+  )
+
+  return ((sum / amount) / currencyList.lines[3].chaosEquivalent).toFixed(3)
+}
+
+export const getListProjected = (currencyList, resultList) => {
+  if (!resultList || resultList.length === 0)
+    return resultList
+
+  let sum = 0, amount = 0
+  //calculates avg price
+  resultList.forEach(item => {
+      if (item.listing.price) {
+        sum += +priceChaos(currencyList, item.listing.price.amount, item.listing.price.currency)
+        amount++
+      }
+    },
+  )
+  let avg = sum / amount
+  sum = 0
+  //calculates standard deviation
+  resultList.forEach(item => {
+      if (item.listing.price) {
+        sum += (+priceChaos(currencyList, item.listing.price.amount, item.listing.price.currency) - avg) *
+          (+priceChaos(currencyList, item.listing.price.amount, item.listing.price.currency) - avg)
+      }
+    },
+  )
+  let dev = Math.sqrt(sum / amount)
+  let finalList = []
+  sum = 0
+  amount = 0
+  //filters items with price > avg + dev, calculates their avg price
+  resultList.forEach(item => {
+      if (item.listing.price && +priceChaos(currencyList, item.listing.price.amount, item.listing.price.currency) <= avg + dev) {
+        finalList.push(item)
+        sum += +priceChaos(currencyList, item.listing.price.amount, item.listing.price.currency)
+        amount++
+      }
+    },
+  )
+  avg = sum / amount
+  //filters out all items with prices higher than new avg, calculates and returns their avg
+  return finalList.filter(item => item.listing.price && +priceChaos(currencyList, item.listing.price.amount, item.listing.price.currency) <= avg,
+  )
 }
