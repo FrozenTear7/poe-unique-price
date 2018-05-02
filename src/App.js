@@ -12,6 +12,8 @@ import {
 } from './utils'
 import Loading from './Loading'
 
+let previousEps = 0
+
 class App extends Component {
   constructor() {
     super()
@@ -102,10 +104,11 @@ class App extends Component {
                   })
               }
             }
-            else if (response.total < 20)
+            else if (response.total < 20) {
+              previousEps = eps
               this.getResultList(eps + 1.5)
-            else if (response.total > 100)
-              this.getResultList(eps - 1.5)
+            } else if (response.total > 100)
+              this.getResultList(eps - ((eps - previousEps) / 2))
           }
         }
         ,
@@ -139,7 +142,7 @@ class App extends Component {
               errorList: response.error.message,
             })
           } else if (response.total !== 0) {
-            this.getResultList(1)
+            this.getResultList(0)
           } else if (response.total === 0)
             if (response.error) {
               this.setState({
